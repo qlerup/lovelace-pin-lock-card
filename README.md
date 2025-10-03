@@ -14,10 +14,15 @@ Supports the Lovelace GUI editor.
 ## Installation
 
 ### HACS (as a custom repository)
+
 1. HACS → **Frontend** → `⋮` → **Custom repositories**
-2. Add: `https://github.com/qlerup/lovelace-pin-lock-card` with type **Lovelace**
+2. Add this repository URL and set **Category** to **Lovelace**:
+   ```text
+   https://github.com/qlerup/lovelace-pin-lock-card
+   ```
 3. Install **Pin Lock Card**
 4. Reload the frontend cache (hard refresh)
+
 
 > The resource will usually be added as  
 > `/hacsfiles/lovelace-pin-lock-card/pin-lock-card.js`
@@ -63,3 +68,13 @@ card:
 | `hint`           | string          | –           | Small helper text under the title             |
 | `max_width`      | string/number   | `"360px"`   | Max width (e.g. `420`, `420px`, `24rem`)     |
 | `card`           | object          | –           | The inner card to protect                     |
+
+
+
+
+
+
+   ```text
+   https://github.com/qlerup/lovelace-pin-lock-card
+   ```
+
