@@ -27,18 +27,39 @@ Add a Lovelace **resource** (Settings → Dashboards → Resources → Add):
 ```yaml
 url: https://cdn.jsdelivr.net/gh/qlerup/lovelace-pin-lock-card@v1.0.0/pin-lock-card.js
 type: module
+```
 
+### YAML Example
 ```yaml
 type: custom:pin-lock-card
-title: "PIN Lock"
+title: "Kodelås"
 codes:
-  - "1234"           # you can add multiple codes
-relock_seconds: 60   # auto re-lock after N seconds (optional)
-show_keypad: true    # show on-screen keypad
-mask_input: true     # mask input while typing
-hint: "Enter PIN"    # optional helper text under the title
-max_width: "360px"   # number (pixels) or any valid CSS width
+  - "1234"            # you can add multiple codes
+relock_seconds: 60    # auto re-lock after N seconds (omit/0 to disable)
+show_keypad: true     # show on-screen keypad
+mask_input: true      # mask digits while typing
+hint: "Enter PIN"     # optional helper text
+max_width: "360px"    # number or any CSS width
 card:
-  type: entities     # the inner card you want to protect
+  type: entities      # the inner card to protect
   entities:
     - switch.example
+```
+> [!TIP]
+> In the GUI editor you can enter multiple codes as a comma-separated list,
+> e.g., `1234, 0000, 9999`.
+
+
+
+## Options
+
+| Option           | Type            | Default     | Description                                   |
+| :--------------- | :-------------- | :---------- | :-------------------------------------------- |
+| `codes`          | array of string | `["1234"]`  | One or more accepted PIN codes                |
+| `relock_seconds` | number          | `60`        | Auto re-lock after N seconds                  |
+| `show_keypad`    | boolean         | `true`      | Show the on-screen keypad                     |
+| `mask_input`     | boolean         | `true`      | Mask digits while typing                      |
+| `title`          | string          | `"PIN Lock"`| Title shown above                             |
+| `hint`           | string          | –           | Small helper text under the title             |
+| `max_width`      | string/number   | `"360px"`   | Max width (e.g. `420`, `420px`, `24rem`)     |
+| `card`           | object          | –           | The inner card to protect                     |
