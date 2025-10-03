@@ -28,7 +28,7 @@ Add a Lovelace **resource** (Settings → Dashboards → Resources → Add):
 url: https://cdn.jsdelivr.net/gh/qlerup/lovelace-pin-lock-card@v1.0.0/pin-lock-card.js
 type: module
 
-
+```yaml
 type: custom:pin-lock-card
 title: "PIN Lock"
 codes:
