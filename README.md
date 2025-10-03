@@ -29,7 +29,6 @@ url: https://cdn.jsdelivr.net/gh/qlerup/lovelace-pin-lock-card@v1.0.0/pin-lock-c
 type: module
 
 
-### Manual (CDN)
 type: custom:pin-lock-card
 title: "PIN Lock"
 codes:
