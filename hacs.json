@@ -1,0 +1,6 @@
+{
+  "name": "Pin Lock Card",
+  "render_readme": true,
+  "filename": "pin-lock-card.js",
+  "homeassistant": "2023.12.0"
+}
