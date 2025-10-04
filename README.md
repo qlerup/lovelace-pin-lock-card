@@ -46,7 +46,6 @@ title: "Kodelås"
 codes:
   - "1234"            # you can add multiple codes
 relock_seconds: 60    # auto re-lock after N seconds (omit/0 to disable)
-show_keypad: true     # show on-screen keypad
 mask_input: true      # mask digits while typing
 hint: "Enter PIN"     # optional helper text
 max_width: "360px"    # number or any CSS width
@@ -67,7 +66,6 @@ card:
 | :--------------- | :-------------- | :---------- | :-------------------------------------------- |
 | `codes`          | array of string | `["1234"]`  | One or more accepted PIN codes                |
 | `relock_seconds` | number          | `60`        | Auto re-lock after N seconds                  |
-| `show_keypad`    | boolean         | `true`      | Show the on-screen keypad                     |
 | `mask_input`     | boolean         | `true`      | Mask digits while typing                      |
 | `title`          | string          | `"PIN Lock"`| Title shown above                             |
 | `hint`           | string          | –           | Small helper text under the title             |
