@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.1";
+const CARD_VERSION = "1.0.2";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -256,6 +256,32 @@ class PinLockCard extends LitElement {
     return `--pin-lock-card-max-width:${val}`;
   }
 
+  // Detect if rendered inside HA's card picker preview (cross shadow roots)
+  _getIsPreview() {
+    try {
+      const selectors = [
+        'hui-card-preview',
+        'hui-dialog-select-card',
+        'hui-card-picker',
+        'hui-card-element-editor'
+      ];
+      let el = this;
+      let hops = 0;
+      while (el && hops++ < 25) {
+        if (el.matches && selectors.some((s) => el.matches(s))) return true;
+        const root = el.getRootNode?.();
+        if (root?.host) {
+          el = root.host;
+        } else {
+          el = el.parentElement || null;
+        }
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   async _ensureChild() {
     if (!this._config?.card) {
       this._childEl = undefined;
@@ -379,6 +405,10 @@ class PinLockCard extends LitElement {
   render() {
     if (!this._config) return "";
 
+    // Toggle compact styling when shown in card picker preview
+    const isPreview = this._getIsPreview();
+    this.classList.toggle('is-preview', !!isPreview);
+
     const title = this._config.title ?? "PIN Lock";
 
     if (this._isUnlocked) {
@@ -438,6 +468,7 @@ class PinLockCard extends LitElement {
 
   // ---------- Lovelace sizing ----------
   getCardSize() {
+    if (this._getIsPreview && this._getIsPreview()) return 2; // smaller in picker
     if (!this._isUnlocked) return 3;
     if (this._childEl?.getCardSize) return this._childEl.getCardSize();
     return 6;
@@ -465,6 +496,15 @@ class PinLockCard extends LitElement {
 
       .actions { display: flex; justify-content: flex-end; gap: 8px; }
 
+      /* Compact preview when shown in card picker */
+      :host(.is-preview) .header { padding: 6px 10px 0 10px; }
+      :host(.is-preview) .title { font-size: 0.9em; }
+      :host(.is-preview) .hint { display: none; }
+      :host(.is-preview) .keypad-wrap { padding: 6px 10px 10px 10px; gap: 6px; max-width: 220px; }
+      :host(.is-preview) .pin-display { height: 28px; font-size: 14px; letter-spacing: 4px; }
+      :host(.is-preview) .keypad { gap: 6px; }
+      :host(.is-preview) .key { height: 32px; font-size: 14px; border-radius: 10px; }
+
       :host(.shake) .pin-display { animation: shake 0.3s; }
       @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } 100% { transform: translateX(0); } }
     `;
@@ -481,7 +521,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.0.1",
+  name: "PIN Lock Card Dev v1.0.2",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
