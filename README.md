@@ -75,11 +75,18 @@ card:
 | `card`           | object          | –           | The inner card to protect                     |
 
 
+## Security notice
 
+> [!CAUTION]
+> **PINs are not encrypted.** This card validates PINs client-side. Anyone with access to the Lovelace editor or browser DevTools can discover the configured PIN codes. Do **not** use this for real security or to protect sensitive/critical controls.
 
+### Recommended hardening
 
+- **Use with Kiosk Mode** on wall tablets/shared screens to hide header/sidebar and block access to the editor for non-admins:  
+  - Kiosk Mode (maintained fork): https://github.com/NemesisRE/kiosk-mode  
+  - Legacy (archived): https://github.com/maykar/kiosk-mode
+- Give household users **non-admin** roles.
+- Limit who can **edit dashboards**.
+- Treat this as a **convenience lock only** (deterrence), not a security boundary.
 
-   ```text
-   https://github.com/qlerup/lovelace-pin-lock-card
-   ```
 
