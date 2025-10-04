@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.3";
+const CARD_VERSION = "1.0.4";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -136,7 +136,7 @@ class PinLockCardEditor extends HTMLElement {
             </label>
           </div>
           <h3>Card behind the lock</h3>
-          <p class="muted">Configure the card behind the lock in YAML under <code>card:</code>. The GUI field for manual YAML has been removed.</p>
+          <p class="muted">Configure the card behind the lock in YAML under <code>card:</code>.</p>
           <div id="child-container"></div>
         </div>
       `;
@@ -515,7 +515,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.0.3",
+  name: "PIN Lock Card v1.0.4",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
