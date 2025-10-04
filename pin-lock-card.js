@@ -10,10 +10,140 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.4";
+const CARD_VERSION = "1.0.5";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+// Built-in i18n (single-file). Extend with more languages as needed
+const I18N = {
+  en: {
+    'editor.title_label': 'Title',
+    'editor.codes_label': 'Codes (comma-separated)',
+    'editor.relock_label': 'Auto-lock after (seconds)',
+    'editor.mask_pin': 'Mask PIN (•)',
+    'editor.max_width_label': 'Max width for PIN (number; empty = unlimited)',
+    'editor.hint_label': 'Hint (optional)',
+    'editor.section_card_behind': 'Card behind the lock',
+    'editor.section_card_help': 'Configure the card behind the lock in YAML under card:',
+    'editor.could_not_load': 'Could not load card editor.',
+
+    'card.title_default': 'PIN Lock',
+    'card.enter_code': 'Enter code',
+    'card.lock_now': 'Lock now',
+    'card.select_card_placeholder': 'Select a card in the editor…',
+    'card.time_to_autolock': 'Time to auto-lock',
+  },
+  da: {
+    'editor.title_label': 'Titel',
+    'editor.codes_label': 'Koder (kommasepareret)',
+    'editor.relock_label': 'Autolås efter (sekunder)',
+    'editor.mask_pin': 'Skjul PIN (•)',
+    'editor.max_width_label': 'Maks bredde for PIN (tal; tom = ubegrænset)',
+    'editor.hint_label': 'Tip (valgfri)',
+    'editor.section_card_behind': 'Kort bag låsen',
+    'editor.section_card_help': 'Konfigurer kortet bag låsen i YAML under card:',
+    'editor.could_not_load': 'Kunne ikke indlæse korteditor.',
+
+    'card.title_default': 'PIN-lås',
+    'card.enter_code': 'Indtast kode',
+    'card.lock_now': 'Lås nu',
+    'card.select_card_placeholder': 'Vælg et kort i editoren…',
+    'card.time_to_autolock': 'Tid til autolås',
+  },
+  sv: {
+    'editor.title_label': 'Titel',
+    'editor.codes_label': 'Koder (kommaseparerade)',
+    'editor.relock_label': 'Autolås efter (sekunder)',
+    'editor.mask_pin': 'Maskera PIN (•)',
+    'editor.max_width_label': 'Maxbredd för PIN (nummer; tom = obegränsad)',
+    'editor.hint_label': 'Tips (valfritt)',
+    'editor.section_card_behind': 'Kort bakom låset',
+    'editor.section_card_help': 'Konfigurera kortet bakom låset i YAML under card:',
+    'editor.could_not_load': 'Kunde inte läsa in kortredigeraren.',
+
+    'card.title_default': 'PIN-lås',
+    'card.enter_code': 'Ange kod',
+    'card.lock_now': 'Lås nu',
+    'card.select_card_placeholder': 'Välj ett kort i redigeraren…',
+    'card.time_to_autolock': 'Tid till autolås',
+  },
+  nb: {
+    'editor.title_label': 'Tittel',
+    'editor.codes_label': 'Koder (kommaseparert)',
+    'editor.relock_label': 'Autolås etter (sekunder)',
+    'editor.mask_pin': 'Skjul PIN (•)',
+    'editor.max_width_label': 'Maks bredde for PIN (tall; tom = ubegrenset)',
+    'editor.hint_label': 'Hint (valgfritt)',
+    'editor.section_card_behind': 'Kort bak låsen',
+    'editor.section_card_help': 'Konfigurer kortet bak låsen i YAML under card:',
+    'editor.could_not_load': 'Kunne ikke laste inn kortredigerer.',
+
+    'card.title_default': 'PIN-lås',
+    'card.enter_code': 'Skriv inn kode',
+    'card.lock_now': 'Lås nå',
+    'card.select_card_placeholder': 'Velg et kort i redigereren…',
+    'card.time_to_autolock': 'Tid til autolås',
+  },
+  de: {
+    'editor.title_label': 'Titel',
+    'editor.codes_label': 'Codes (durch Komma getrennt)',
+    'editor.relock_label': 'Automatisch sperren nach (Sekunden)',
+    'editor.mask_pin': 'PIN ausblenden (•)',
+    'editor.max_width_label': 'Maximale Breite für PIN (Zahl; leer = unbegrenzt)',
+    'editor.hint_label': 'Hinweis (optional)',
+    'editor.section_card_behind': 'Karte hinter der Sperre',
+    'editor.section_card_help': 'Konfigurieren Sie die Karte hinter der Sperre in YAML unter card:',
+    'editor.could_not_load': 'Karten-Editor konnte nicht geladen werden.',
+
+    'card.title_default': 'PIN-Sperre',
+    'card.enter_code': 'Code eingeben',
+    'card.lock_now': 'Jetzt sperren',
+    'card.select_card_placeholder': 'Wählen Sie eine Karte im Editor aus…',
+    'card.time_to_autolock': 'Zeit bis Autosperre',
+  },
+  es: {
+    'editor.title_label': 'Título',
+    'editor.codes_label': 'Códigos (separados por comas)',
+    'editor.relock_label': 'Bloqueo automático tras (segundos)',
+    'editor.mask_pin': 'Ocultar PIN (•)',
+    'editor.max_width_label': 'Ancho máximo para PIN (número; vacío = ilimitado)',
+    'editor.hint_label': 'Pista (opcional)',
+    'editor.section_card_behind': 'Tarjeta detrás del bloqueo',
+    'editor.section_card_help': 'Configura la tarjeta detrás del bloqueo en YAML bajo card:',
+    'editor.could_not_load': 'No se pudo cargar el editor de tarjetas.',
+
+    'card.title_default': 'Bloqueo PIN',
+    'card.enter_code': 'Introduce el código',
+    'card.lock_now': 'Bloquear ahora',
+    'card.select_card_placeholder': 'Selecciona una tarjeta en el editor…',
+    'card.time_to_autolock': 'Tiempo hasta el autobloqueo',
+  },
+};
+
+function getLangFromHass(hass) {
+  const raw = hass?.locale?.language || hass?.language || navigator.language || 'en';
+  return String(raw).toLowerCase();
+}
+
+function localize(key, langOrHass) {
+  const raw = typeof langOrHass === 'string' ? langOrHass : getLangFromHass(langOrHass);
+  const lang = String(raw).toLowerCase();
+  const alias = { no: 'nb' }; // language aliases
+  const parts = lang.split('-');
+  const candidates = [
+    lang,
+    parts[0],
+    alias[lang],
+    alias[parts[0]],
+    'en',
+  ].filter(Boolean);
+  for (const c of candidates) {
+    const dict = I18N[c];
+    if (dict && dict[key]) return dict[key];
+  }
+  return I18N.en[key] || key;
+}
 
 // ---------------------------------
 // Card Editor (Plain HTMLElement to avoid frontend component deps)
@@ -29,6 +159,7 @@ class PinLockCardEditor extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
+    this._lang = getLangFromHass(hass);
     const child = this.shadowRoot?.querySelector('hui-card-element-editor');
     if (child) child.hass = hass;
   }
@@ -65,7 +196,7 @@ class PinLockCardEditor extends HTMLElement {
       } catch (err) {
         const p = document.createElement('p');
         p.className = 'muted';
-        p.textContent = 'Could not load card editor.';
+        p.textContent = localize('editor.could_not_load', this._lang);
         container.appendChild(p);
         console.warn('pin-lock-card: unable to mount child editor', err);
       }
@@ -95,6 +226,8 @@ class PinLockCardEditor extends HTMLElement {
       return '';
     })();
 
+    const t = (k) => localize(k, this._lang || 'en');
+
     try {
       this.shadowRoot.innerHTML = `
         <style>
@@ -108,35 +241,35 @@ class PinLockCardEditor extends HTMLElement {
         </style>
         <div class="editor">
           <div class="row">
-            <label> Title<br/>
-              <input id="title" type="text" value="${cfg.title ?? 'PIN Lock'}"/>
+            <label> ${t('editor.title_label')}<br/>
+              <input id="title" type="text" value="${cfg.title ?? t('card.title_default')}"/>
             </label>
           </div>
           <div class="row two">
-            <label> Codes (comma-separated)<br/>
+            <label> ${t('editor.codes_label')}<br/>
               <input id="codes" type="text" value="${codesStr}"/>
             </label>
-            <label> Auto-lock after (seconds)<br/>
+            <label> ${t('editor.relock_label')}<br/>
               <input id="relock" type="number" min="5" value="${String(cfg.relock_seconds ?? 60)}"/>
             </label>
           </div>
           <div class="row">
             <label>
-              <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> Mask PIN (•)
+              <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> ${t('editor.mask_pin')}
             </label>
           </div>
           <div class="row">
-            <label> Max width for PIN (number; empty = unlimited)<br/>
+            <label> ${t('editor.max_width_label')}<br/>
               <input id="maxw" type="text" placeholder="360" value="${maxwInput}"/>
             </label>
           </div>
           <div class="row">
-            <label> Hint (optional)<br/>
+            <label> ${t('editor.hint_label')}<br/>
               <input id="hint" type="text" value="${cfg.hint ?? ''}"/>
             </label>
           </div>
-          <h3>Card behind the lock</h3>
-          <p class="muted">Configure the card behind the lock in YAML under <code>card:</code>.</p>
+          <h3>${t('editor.section_card_behind')}</h3>
+          <p class="muted">${t('editor.section_card_help')} <code>card:</code>.</p>
           <div id="child-container"></div>
         </div>
       `;
@@ -311,6 +444,7 @@ class PinLockCard extends LitElement {
 
   set hass(hass) {
     this.__hass = hass;
+    this._lang = getLangFromHass(hass);
     if (this._childEl) this._childEl.hass = hass;
     this._updateRemaining();
   }
@@ -404,7 +538,7 @@ class PinLockCard extends LitElement {
     const isPreview = this._getIsPreview();
     this.classList.toggle('is-preview', !!isPreview);
 
-    const title = this._config.title ?? "PIN Lock";
+    const title = this._config.title ?? localize('card.title_default', this._lang || 'en');
 
     if (this._isUnlocked) {
       return html`
@@ -412,13 +546,13 @@ class PinLockCard extends LitElement {
           <div class="header">
             <div class="title">${title}</div>
             <div class="spacer"></div>
-            <div class="timer" title="Time to auto-lock">
+            <div class="timer" title="${localize('card.time_to_autolock', this._lang || 'en')}">
               ${this._remaining ?? 0}s
             </div>
-            <mwc-button dense @click=${this._lockNow}>Lock now</mwc-button>
+            <mwc-button dense @click=${this._lockNow}>${localize('card.lock_now', this._lang || 'en')}</mwc-button>
           </div>
           <div class="content">
-            ${this._childEl || html`<div class="placeholder">Select a card in the editor…</div>`}
+            ${this._childEl || html`<div class="placeholder">${localize('card.select_card_placeholder', this._lang || 'en')}</div>`}
           </div>
         </ha-card>
       `;
@@ -435,7 +569,7 @@ class PinLockCard extends LitElement {
           ${this._config.hint?.trim() ? html`<div class="hint">${this._config.hint}</div>` : ""}
         </div>
         <div class="keypad-wrap">
-          <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">Enter code</span>`}</div>
+          <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">${localize('card.enter_code', this._lang || 'en')}</span>`}</div>
           ${this._renderKeypad()}
         </div>
       </ha-card>
@@ -515,7 +649,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.0.4",
+  name: "PIN Lock Card v1.0.5",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
