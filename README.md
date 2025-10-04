@@ -3,7 +3,8 @@
 A Home Assistant Lovelace card that protects any card behind a PIN code, with optional auto re-lock/timer.  
 Supports the Lovelace GUI editor.
 
-![Pin lock card gif](https://github.com/user-attachments/assets/f1a8b26c-7b58-49ad-96b0-94d817a31fc8)
+
+![Pin lock card gif](https://github.com/user-attachments/assets/4af69454-3703-4408-ad8d-7b9fb0d49d4d)
 
 
 
