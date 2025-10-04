@@ -7,10 +7,10 @@ const html = (window.litHtml && window.litHtml.html) || window.html || (_Base?.p
 const css  = (window.litHtml && window.litHtml.css)  || window.css  || (_Base?.prototype?.css);
 
 if (!html || !css) {
-  throw new Error("pin-lock-card: Lit html/css ikke fundet i frontend-miljøet");
+  throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.2.6-patched";
+const CARD_VERSION = "1.0.1";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -65,7 +65,7 @@ class PinLockCardEditor extends HTMLElement {
       } catch (err) {
         const p = document.createElement('p');
         p.className = 'muted';
-        p.textContent = 'Kunne ikke indlæse kort-editor.';
+        p.textContent = 'Could not load card editor.';
         container.appendChild(p);
         console.warn('pin-lock-card: unable to mount child editor', err);
       }
@@ -108,38 +108,38 @@ class PinLockCardEditor extends HTMLElement {
         </style>
         <div class="editor">
           <div class="row">
-            <label> Titel<br/>
-              <input id="title" type="text" value="${cfg.title ?? 'Kodelås'}"/>
+            <label> Title<br/>
+              <input id="title" type="text" value="${cfg.title ?? 'PIN Lock'}"/>
             </label>
           </div>
           <div class="row two">
-            <label> Koder (komma-separeret)<br/>
+            <label> Codes (comma-separated)<br/>
               <input id="codes" type="text" value="${codesStr}"/>
             </label>
-            <label> Auto-lås efter (sekunder)<br/>
+            <label> Auto-lock after (seconds)<br/>
               <input id="relock" type="number" min="5" value="${String(cfg.relock_seconds ?? 60)}"/>
             </label>
           </div>
           <div class="row two">
             <label>
-              <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> Skjul PIN (•)
+              <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> Mask PIN (•)
             </label>
             <label>
-              <input id="keypad" type="checkbox" ${cfg.show_keypad !== false ? 'checked' : ''}/> Vis numerisk keypad
+              <input id="keypad" type="checkbox" ${cfg.show_keypad !== false ? 'checked' : ''}/> Show numeric keypad
             </label>
           </div>
           <div class="row">
-            <label> Max bredde for PIN (tal; tom = ingen grænse)<br/>
+            <label> Max width for PIN (number; empty = unlimited)<br/>
               <input id="maxw" type="text" placeholder="360" value="${maxwInput}"/>
             </label>
           </div>
           <div class="row">
-            <label> Hint (valgfrit)<br/>
+            <label> Hint (optional)<br/>
               <input id="hint" type="text" value="${cfg.hint ?? ''}"/>
             </label>
           </div>
-          <h3>Kort bag kodelåsen</h3>
-          <p class="muted">Konfigurer kortet bag låsen i YAML under <code>card:</code>. GUI-feltet til manuel YAML er fjernet.</p>
+          <h3>Card behind the lock</h3>
+          <p class="muted">Configure the card behind the lock in YAML under <code>card:</code>. The GUI field for manual YAML has been removed.</p>
           <div id="child-container"></div>
         </div>
       `;
@@ -213,7 +213,7 @@ class PinLockCard extends LitElement {
   static getStubConfig(_hass) {
     return {
       type: "custom:pin-lock-card",
-      title: "Kodelås",
+      title: "PIN Lock",
       relock_seconds: 60,
       codes: ["1234"],
       mask_input: true,
@@ -221,7 +221,7 @@ class PinLockCard extends LitElement {
       card: {
         type: "entities",
         entities: [],
-        title: "Låst kort (redigér mig)",
+        title: "Locked card (edit me)",
       },
     };
   }
@@ -229,7 +229,7 @@ class PinLockCard extends LitElement {
   setConfig(config) {
     if (!config) throw new Error("Missing config");
     const defaults = {
-      title: "Kodelås",
+      title: "PIN Lock",
       relock_seconds: 60,
       codes: ["1234"],
       mask_input: true,
@@ -379,7 +379,7 @@ class PinLockCard extends LitElement {
   render() {
     if (!this._config) return "";
 
-    const title = this._config.title ?? "Kodelås";
+    const title = this._config.title ?? "PIN Lock";
 
     if (this._isUnlocked) {
       return html`
@@ -387,13 +387,13 @@ class PinLockCard extends LitElement {
           <div class="header">
             <div class="title">${title}</div>
             <div class="spacer"></div>
-            <div class="timer" title="Tid til automatisk lås">
+            <div class="timer" title="Time to auto-lock">
               ${this._remaining ?? 0}s
             </div>
-            <mwc-button dense @click=${this._lockNow}>Lås nu</mwc-button>
+            <mwc-button dense @click=${this._lockNow}>Lock now</mwc-button>
           </div>
           <div class="content">
-            ${this._childEl || html`<div class="placeholder">Vælg et kort i editoren…</div>`}
+            ${this._childEl || html`<div class="placeholder">Select a card in the editor…</div>`}
           </div>
         </ha-card>
       `;
@@ -410,7 +410,7 @@ class PinLockCard extends LitElement {
           ${this._config.hint?.trim() ? html`<div class="hint">${this._config.hint}</div>` : ""}
         </div>
         <div class="keypad-wrap">
-          <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">Indtast kode</span>`}</div>
+          <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">Enter code</span>`}</div>
           ${this._renderKeypad()}
         </div>
       </ha-card>
@@ -481,8 +481,8 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.2.5",
-  description: "Sæt kodelås på et vilkårligt Lovelace-kort og lås automatisk igen efter en periode.",
+  name: "PIN Lock Card v1.0.1",
+  description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
 
