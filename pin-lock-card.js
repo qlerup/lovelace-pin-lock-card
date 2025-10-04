@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.2";
+const CARD_VERSION = "1.0.3";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -21,7 +21,7 @@ const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 class PinLockCardEditor extends HTMLElement {
   setConfig(config) {
     const type = config?.type || 'custom:pin-lock-card';
-    this._config = { type, relock_seconds: 60, codes: ["1234"], mask_input: true, show_keypad: true, max_width: "360px", ...(config || {}) };
+    this._config = { type, relock_seconds: 60, codes: ["1234"], mask_input: true, max_width: "360px", ...(config || {}) };
     this._render();
     // Immediately expose the initial config so YAML is prefilled and GUI mode doesn't fall back to manual
     this._fireChange();
@@ -120,12 +120,9 @@ class PinLockCardEditor extends HTMLElement {
               <input id="relock" type="number" min="5" value="${String(cfg.relock_seconds ?? 60)}"/>
             </label>
           </div>
-          <div class="row two">
+          <div class="row">
             <label>
               <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> Mask PIN (•)
-            </label>
-            <label>
-              <input id="keypad" type="checkbox" ${cfg.show_keypad !== false ? 'checked' : ''}/> Show numeric keypad
             </label>
           </div>
           <div class="row">
@@ -160,7 +157,6 @@ class PinLockCardEditor extends HTMLElement {
       add('relock', 'input', (e) => { this._config = { ...this._config, relock_seconds: Number(e.target.value) || 0 }; });
       add('relock', 'change', () => { this._fireChange(); });
       add('mask', 'change', (e) => { this._config = { ...this._config, mask_input: !!e.target.checked }; this._fireChange(); });
-      add('keypad', 'change', (e) => { this._config = { ...this._config, show_keypad: !!e.target.checked }; this._fireChange(); });
       add('hint', 'input', (e) => { this._config = { ...this._config, hint: e.target.value }; });
       add('hint', 'change', () => { this._fireChange(); });
       add('maxw', 'input', (e) => {
@@ -233,7 +229,6 @@ class PinLockCard extends LitElement {
       relock_seconds: 60,
       codes: ["1234"],
       mask_input: true,
-      show_keypad: true,
       max_width: "360px",
     };
     this._config = { ...defaults, ...config };
@@ -448,7 +443,6 @@ class PinLockCard extends LitElement {
   }
 
   _renderKeypad() {
-    if (this._config.show_keypad === false) return "";
     const keys = [1,2,3,4,5,6,7,8,9,"←",0,"OK"];
     return html`
       <div class="keypad" @click=${this._onKeypadClick}>
@@ -521,7 +515,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card Dev v1.0.2",
+  name: "PIN Lock Card v1.0.3",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
