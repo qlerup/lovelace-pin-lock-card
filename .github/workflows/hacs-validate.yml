@@ -16,6 +16,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: HACS validation
-        uses: hacs/[email protected]
+        uses: hacs/action@main
         with:
           category: plugin
