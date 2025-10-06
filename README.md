@@ -15,7 +15,7 @@ Understøtter Lovelace GUI editor.
 - 🕵️‍♂️ Mask input while typing  
 - 💬 Optional hint text for the user  
 - 📐 Configurable max width  
-- 🌍 **Automatic localization** — follows your Home Assistant language (Danish, Swedish, Norwegian, English, German, Spanish)
+- 🌍 **Automatic localization** — follows your Home Assistant language (Danish, Swedish, Norwegian, English, German, Spanish, French, Finnish)
 
 ---
 
@@ -30,6 +30,8 @@ Starting from **v1.0.5**, the card automatically detects your Home Assistant lan
 | 🇬🇧 English | ✅ |
 | 🇩🇪 German | ✅ |
 | 🇪🇸 Spanish | ✅ |
+| 🇫🇷 French | ✅ |
+| 🇫🇮 Finnish | ✅ |
 
 > 💡 If your language isn’t yet supported, the card will default to **English**.  
 > Want to help? Open an issue titled `Locale request: <language>` or upvote an existing one with 👍.
