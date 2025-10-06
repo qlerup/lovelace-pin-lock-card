@@ -78,11 +78,34 @@ card:
   entities:
     - switch.example
 ```
+---
+## 🖱️ Visual Editor (Lovelace GUI) — Point-and-Click Setup ✨
+Set up the card without touching YAML using the built-in Lovelace GUI editor.
+
+**How to open it:**
+1. 🧭 Go to your dashboard → **Edit** → **Add card** → search for **Pin Lock Card** (or “Custom: Pin Lock Card”).  
+2. 🔐 Enter one or more **PIN codes** (comma-separated).  
+3. ⏱️ Set **Auto re-lock** time (or disable with `0`).  
+4. 👁️ Toggle **Mask input**, keypad visibility, change **Title/Hint**, and **Max width**.  
+5. 🧩 Pick the **inner card** to protect (e.g., Entities, Button, Tile, etc.).  
+6. ✅ Click **Save** — done!
+
+**What it looks like in the editor:**
+
+<img width="1006" height="614" alt="Pin Lock Card — GUI Editor" src="https://github.com/user-attachments/assets/654a0b3e-d092-4e74-be29-b35525b352ba" />
+
+
+> [!NOTE]  
+> The GUI editor mirrors every option available in YAML and previews changes live, making it quick to validate PIN behavior and layout.
+
+
 
 > [!TIP]  
 > In the GUI editor you can enter multiple codes as a comma-separated list, e.g. `1234, 0000, 9999`.
 
+
 ---
+
 
 ## ⚙️ Options
 
@@ -93,10 +116,10 @@ card:
 | `mask_input`     | boolean         | `true`      | Mask digits while typing                      |
 | `title`          | string          | `"PIN Lock"`| Title shown above                             |
 | `hint`           | string          | –           | Small helper text under the title             |
-| `max_width`      | string/number   | `"360px"`   | Max width (e.g. `420`, `420px`, `24rem`)     |
+| `max_width`      | string/number   | `"360px"`   | Max width (e.g. `420`, `420px`, `24rem`)      |
 | `card`           | object          | –           | The inner card to protect                     |
 
----
+
 
 ## 🧩 Security Notice
 
@@ -104,12 +127,10 @@ card:
 > **PINs are not encrypted.** This card validates PINs client-side. Anyone with access to the Lovelace editor or browser DevTools can discover the configured PIN codes. Do **not** use this for real security or to protect sensitive/critical controls.
 
 ### 🔐 Recommended Hardening
+
 - 🔒 Use with **Kiosk Mode** on wall tablets/shared screens to hide header/sidebar and block editor access:  
   - Kiosk Mode (maintained fork): https://github.com/NemesisRE/kiosk-mode  
   - Legacy (archived): https://github.com/maykar/kiosk-mode
 - 👥 Give household users **non-admin** roles  
 - 🧱 Limit who can **edit dashboards**  
 - ⚠️ Treat this as a **convenience lock only**, not a security boundary
-
-
-<img width="1006" height="614" alt="image" src="https://github.com/user-attachments/assets/654a0b3e-d092-4e74-be29-b35525b352ba" />
