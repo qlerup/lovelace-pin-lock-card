@@ -110,9 +110,3 @@ card:
 - 👥 Give household users **non-admin** roles  
 - 🧱 Limit who can **edit dashboards**  
 - ⚠️ Treat this as a **convenience lock only**, not a security boundary
-
----
-
-## 🚀 Upgrade
-- Update to **v1.0.5** via HACS  
-- If translations don’t appear right away, perform a **hard refresh** (`Ctrl/Cmd + Shift + R`)
