@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.5";
+const CARD_VERSION = "1.0.6";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -118,6 +118,40 @@ const I18N = {
     'card.lock_now': 'Bloquear ahora',
     'card.select_card_placeholder': 'Selecciona una tarjeta en el editor…',
     'card.time_to_autolock': 'Tiempo hasta el autobloqueo',
+  },
+  fr: {
+    'editor.title_label': 'Titre',
+    'editor.codes_label': 'Codes (séparés par des virgules)',
+    'editor.relock_label': 'Verrouillage automatique après (secondes)',
+    'editor.mask_pin': 'Masquer le PIN (•)',
+    'editor.max_width_label': 'Largeur max du PIN (nombre; vide = illimité)',
+    'editor.hint_label': 'Indice (facultatif)',
+    'editor.section_card_behind': 'Carte derrière le verrou',
+    'editor.section_card_help': 'Configurer la carte derrière le verrou dans YAML sous card:',
+    'editor.could_not_load': 'Impossible de charger l’éditeur de carte.',
+
+    'card.title_default': 'Verrou PIN',
+    'card.enter_code': 'Saisir le code',
+    'card.lock_now': 'Verrouiller maintenant',
+    'card.select_card_placeholder': 'Sélectionnez une carte dans l’éditeur…',
+    'card.time_to_autolock': 'Temps jusqu’au verrouillage auto',
+  },
+  fi: {
+    'editor.title_label': 'Otsikko',
+    'editor.codes_label': 'Koodit (pilkuin eroteltu)',
+    'editor.relock_label': 'Automaattinen lukitus (sekunteina)',
+    'editor.mask_pin': 'Piilota PIN (•)',
+    'editor.max_width_label': 'PIN:n enimmäisleveys (numero; tyhjä = rajoittamaton)',
+    'editor.hint_label': 'Vihje (valinnainen)',
+    'editor.section_card_behind': 'Kortti lukituksen takana',
+    'editor.section_card_help': 'Määritä lukituksen takana oleva kortti YAML:issa kohdassa card:',
+    'editor.could_not_load': 'Kortin editoria ei voitu ladata.',
+
+    'card.title_default': 'PIN-lukitus',
+    'card.enter_code': 'Syötä koodi',
+    'card.lock_now': 'Lukitse nyt',
+    'card.select_card_placeholder': 'Valitse kortti editorissa…',
+    'card.time_to_autolock': 'Aika automaattiseen lukitukseen',
   },
 };
 
@@ -649,7 +683,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.0.5",
+  name: "PIN Lock Card v1.0.6",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
