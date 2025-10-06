@@ -110,3 +110,6 @@ card:
 - 👥 Give household users **non-admin** roles  
 - 🧱 Limit who can **edit dashboards**  
 - ⚠️ Treat this as a **convenience lock only**, not a security boundary
+
+
+<img width="1006" height="614" alt="image" src="https://github.com/user-attachments/assets/654a0b3e-d092-4e74-be29-b35525b352ba" />
