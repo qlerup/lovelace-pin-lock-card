@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.6";
+const CARD_VERSION = "1.0.9";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -152,6 +152,23 @@ const I18N = {
     'card.lock_now': 'Lukitse nyt',
     'card.select_card_placeholder': 'Valitse kortti editorissa…',
     'card.time_to_autolock': 'Aika automaattiseen lukitukseen',
+  },
+  it: {
+    'editor.title_label': 'Titolo',
+    'editor.codes_label': 'Codici (separati da virgole)',
+    'editor.relock_label': 'Blocco automatico dopo (secondi)',
+    'editor.mask_pin': 'Nascondi PIN (•)',
+    'editor.max_width_label': 'Larghezza massima per PIN (numero; vuoto = illimitato)',
+    'editor.hint_label': 'Suggerimento (opzionale)',
+    'editor.section_card_behind': 'Scheda dietro il blocco',
+    'editor.section_card_help': 'Configura la scheda dietro il blocco in YAML sotto card:',
+    'editor.could_not_load': 'Impossibile caricare l\'editor della scheda.',
+
+    'card.title_default': 'Blocco PIN',
+    'card.enter_code': 'Inserisci codice',
+    'card.lock_now': 'Blocca ora',
+    'card.select_card_placeholder': 'Seleziona una scheda nell\'editor…',
+    'card.time_to_autolock': 'Tempo al blocco automatico',
   },
 };
 
@@ -683,7 +700,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card v1.0.6",
+  name: "PIN Lock Card Dev v1.0.6",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
