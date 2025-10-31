@@ -34,7 +34,6 @@ Starting from **v1.0.5**, the card automatically detects your Home Assistant lan
 | 🇫🇮 Finnish   | ✅         |
 | 🇮🇹 Italian   | ✅         |
 
-
 > 💡 If your language isn’t yet supported, the card will default to **English**.  
 > Want to help? Open an issue titled `Locale request: <language>` or upvote an existing one with 👍.
 
