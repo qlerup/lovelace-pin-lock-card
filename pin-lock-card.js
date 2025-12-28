@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.9";
+const CARD_VERSION = "1.0.6";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -662,10 +662,17 @@ class PinLockCard extends LitElement {
       .spacer { flex: 1; }
       .timer { font-variant-numeric: tabular-nums; opacity: 0.75; margin-right: 8px; }
 
+      /* Keep the locked card border aligned with the keypad max width */
+      ha-card.locked {
+        width: 100%;
+        max-width: min(100%, var(--pin-lock-card-max-width, 100%));
+        margin: 0 auto;
+      }
+
       .content { padding: 0 8px 8px 8px; }
       .placeholder { opacity: 0.6; padding: 12px; }
 
-      .keypad-wrap { padding: 12px 16px 16px 16px; display: grid; gap: 12px; width: 100%; max-width: var(--pin-lock-card-max-width, 100%); margin: 0 auto; }
+      .keypad-wrap { padding: 12px 16px 16px 16px; display: grid; gap: 12px; width: 100%; max-width: 100%; margin: 0 auto; box-sizing: border-box; }
       .pin-display { height: 44px; display: grid; place-items: center; border-radius: var(--ha-card-border-radius, 12px); background: var(--card-secondary-background-color); font-size: 20px; letter-spacing: 8px; }
       .pin-display .placeholder { opacity: 0.6; letter-spacing: normal; }
 
@@ -684,6 +691,23 @@ class PinLockCard extends LitElement {
       :host(.is-preview) .keypad { gap: 6px; }
       :host(.is-preview) .key { height: 32px; font-size: 14px; border-radius: 10px; }
 
+      /* Responsive tweaks for small screens (mobile) */
+      @media (max-width: 380px) {
+        .header { padding: 10px 12px 0 12px; }
+        .keypad-wrap { padding: 10px 12px 12px 12px; gap: 10px; }
+        .pin-display { height: 40px; font-size: 18px; letter-spacing: 6px; }
+        .keypad { gap: 8px; }
+        .key { height: 44px; font-size: 16px; border-radius: 10px; }
+      }
+
+      @media (max-width: 330px) {
+        .header { padding: 8px 10px 0 10px; }
+        .keypad-wrap { padding: 8px 10px 10px 10px; gap: 8px; }
+        .pin-display { height: 36px; font-size: 16px; letter-spacing: 5px; }
+        .keypad { gap: 6px; }
+        .key { height: 40px; font-size: 15px; border-radius: 10px; }
+      }
+
       :host(.shake) .pin-display { animation: shake 0.3s; }
       @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } 100% { transform: translateX(0); } }
     `;
@@ -700,7 +724,7 @@ if (!customElements.get("pin-lock-card")) {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "pin-lock-card",
-  name: "PIN Lock Card Dev v1.0.6",
+  name: "PIN Lock Card",
   description: "Lock any Lovelace card behind a PIN and automatically relock after a period.",
   preview: true,
 });
