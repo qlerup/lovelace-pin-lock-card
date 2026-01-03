@@ -591,9 +591,16 @@ class PinLockCard extends LitElement {
 
     const title = this._config.title ?? localize('card.title_default', this._lang || 'en');
 
-    if (this._isUnlocked) {
-      return html`
-        <ha-card class="unlocked">
+    // Keep the same <ha-card> element across lock/unlock transitions.
+    // card_mod can inject styles into ha-card's shadowRoot; recreating the element drops those styles.
+    const unlocked = this._isUnlocked;
+
+    const masked = this._config.mask_input !== false;
+    const display = masked ? "•".repeat(this._entered?.length || 0) : (this._entered || "");
+
+    return html`
+      <ha-card class=${unlocked ? "unlocked" : "locked"} style=${unlocked ? "" : this._maxWidthStyle()}>
+        ${unlocked ? html`
           <div class="header">
             <div class="title">${title}</div>
             <div class="spacer"></div>
@@ -605,24 +612,17 @@ class PinLockCard extends LitElement {
           <div class="content">
             ${this._childEl || html`<div class="placeholder">${localize('card.select_card_placeholder', this._lang || 'en')}</div>`}
           </div>
-        </ha-card>
-      `;
-    }
-
-    const masked = this._config.mask_input !== false;
-    const display = masked ? "•".repeat(this._entered?.length || 0) : (this._entered || "");
-
-    return html`
-      <ha-card class="locked" style="${this._maxWidthStyle()}">
-        <div class="header">
-          <div class="title">${title}</div>
-          <div class="spacer"></div>
-          ${this._config.hint?.trim() ? html`<div class="hint">${this._config.hint}</div>` : ""}
-        </div>
-        <div class="keypad-wrap">
-          <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">${localize('card.enter_code', this._lang || 'en')}</span>`}</div>
-          ${this._renderKeypad()}
-        </div>
+        ` : html`
+          <div class="header">
+            <div class="title">${title}</div>
+            <div class="spacer"></div>
+            ${this._config.hint?.trim() ? html`<div class="hint">${this._config.hint}</div>` : ""}
+          </div>
+          <div class="keypad-wrap">
+            <div class="pin-display" aria-label="PIN">${display || html`<span class="placeholder">${localize('card.enter_code', this._lang || 'en')}</span>`}</div>
+            ${this._renderKeypad()}
+          </div>
+        `}
       </ha-card>
     `;
   }
