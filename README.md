@@ -1,5 +1,6 @@
 # Pin Lock Card (Home Assistant Lovelace) 🔒
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://hacs.xyz)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://hacs.xyz) [![Downloads](https://img.shields.io/github/downloads/qlerup/lovelace-pin-lock-card/total)](https://github.com/qlerup/lovelace-pin-lock-card/releases)
+
 
 A Home Assistant Lovelace card component that protects any card behind a PIN code — now with automatic translation! 🌐
 Supports the Lovelace GUI editor.
