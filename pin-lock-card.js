@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.0.6";
+const CARD_VERSION = "1.1.2";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -301,7 +301,7 @@ class PinLockCardEditor extends HTMLElement {
               <input id="codes" type="text" value="${codesStr}"/>
             </label>
             <label> ${t('editor.relock_label')}<br/>
-              <input id="relock" type="number" min="5" value="${String(cfg.relock_seconds ?? 60)}"/>
+              <input id="relock" type="number" min="0" value="${String(cfg.relock_seconds ?? 60)}"/>
             </label>
           </div>
           <div class="row">
@@ -514,8 +514,9 @@ class PinLockCard extends LitElement {
     const list = Array.isArray(raw) ? raw : [raw];
     const codes = (list || []).map((c) => String(c).trim()).filter(Boolean);
     if (codes.includes(this._entered)) {
-      const seconds = Number(this._config.relock_seconds) || 60;
-      this._unlockUntil = Date.now() + seconds * 1000;
+      const configured = Number(this._config.relock_seconds ?? 60);
+      const seconds = Number.isFinite(configured) && configured >= 0 ? configured : 60;
+      this._unlockUntil = seconds === 0 ? Infinity : Date.now() + seconds * 1000;
       this._entered = "";
       this._updateRemaining();
       this.requestUpdate();
@@ -563,6 +564,10 @@ class PinLockCard extends LitElement {
   }
 
   _updateRemaining() {
+    if (this._unlockUntil === Infinity) {
+      this._remaining = null;
+      return;
+    }
     if (!this._unlockUntil) {
       this._remaining = 0;
       return;
@@ -604,9 +609,9 @@ class PinLockCard extends LitElement {
           <div class="header">
             <div class="title">${title}</div>
             <div class="spacer"></div>
-            <div class="timer" title="${localize('card.time_to_autolock', this._lang || 'en')}">
+            ${this._remaining !== null ? html`<div class="timer" title="${localize('card.time_to_autolock', this._lang || 'en')}">
               ${this._remaining ?? 0}s
-            </div>
+            </div>` : ''}
             <mwc-button dense @click=${this._lockNow}>${localize('card.lock_now', this._lang || 'en')}</mwc-button>
           </div>
           <div class="content">
