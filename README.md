@@ -61,7 +61,7 @@ Starting from **v1.0.5**, the card automatically detects your Home Assistant lan
 ### 🪣 Manual (CDN)
 Add a Lovelace **resource** (Settings → Dashboards → Resources → Add):
 ```yaml
-url: https://cdn.jsdelivr.net/gh/qlerup/lovelace-pin-lock-card@v1.0.5/pin-lock-card.js
+url: https://cdn.jsdelivr.net/gh/qlerup/lovelace-pin-lock-card@v1.1.3/pin-lock-card.js
 type: module
 ```
 
@@ -73,7 +73,7 @@ type: custom:pin-lock-card
 title: "Kodelås"
 codes:
   - "1234"            # you can add multiple codes
-relock_seconds: 60    # auto re-lock after N seconds (omit/0 to disable)
+relock_seconds: 60    # auto re-lock after N seconds (0 disables it; omitted defaults to 60)
 mask_input: true      # mask digits while typing
 hint: "Enter PIN"     # optional helper text
 max_width: "360px"    # number or any CSS width
@@ -116,7 +116,7 @@ Set up the card without touching YAML using the built-in Lovelace GUI editor.
 | Option           | Type            | Default     | Description                                   |
 | :--------------- | :-------------- | :---------- | :-------------------------------------------- |
 | `codes`          | array of string | `["1234"]`  | One or more accepted PIN codes                |
-| `relock_seconds` | number          | `60`        | Auto re-lock after N seconds                  |
+| `relock_seconds` | number          | `60`        | Auto re-lock after N seconds. Set to 0 to disable.|
 | `mask_input`     | boolean         | `true`      | Mask digits while typing                      |
 | `title`          | string          | `"PIN Lock"`| Title shown above                             |
 | `hint`           | string          | –           | Small helper text under the title             |

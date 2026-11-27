@@ -20,3 +20,27 @@ for(const [value,expected] of [[0,Infinity],['0',Infinity],[undefined,60],[null,
     card._lockNow();assert.equal(card._isUnlocked,0);
   });
 }
+
+test('editing the delay updates an active unlock without extending it on unrelated edits', () => {
+  const card = new Card();
+  card._tickStart = () => {};
+  const config = { codes: ['2468'] };
+  card.setConfig(config);
+  card._entered = '2468';
+  card._tryUnlock();
+  card.setConfig({ ...config, relock_seconds: 0 });
+  assert.equal(card._unlockUntil, Infinity);
+  assert.equal(card._remaining, null);
+
+  const before = Date.now();
+  card.setConfig({ ...config, relock_seconds: 30 });
+  assert.ok(card._unlockUntil >= before + 30000 && card._unlockUntil <= Date.now() + 30000);
+  card._unlockUntil -= 1000;
+  const deadline = card._unlockUntil;
+  card.setConfig({ ...config, title: 'Updated', relock_seconds: '30' });
+  assert.equal(card._unlockUntil, deadline);
+
+  card._lockNow();
+  card.setConfig({ ...config, relock_seconds: 0 });
+  assert.ok(!card._isUnlocked);
+});

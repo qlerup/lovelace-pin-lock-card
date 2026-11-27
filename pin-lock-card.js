@@ -10,7 +10,7 @@ if (!html || !css) {
   throw new Error("pin-lock-card: Lit html/css not found in the frontend environment");
 }
 
-const CARD_VERSION = "1.1.2";
+const CARD_VERSION = "1.1.3";
 
 // Helpers
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -370,6 +370,11 @@ if (!customElements.get('pin-lock-card-editor')) {
 // ---------------------------------
 // The Card
 // ---------------------------------
+function relockSeconds(config) {
+  const seconds = Number(config.relock_seconds ?? 60);
+  return Number.isFinite(seconds) && seconds >= 0 ? seconds : 60;
+}
+
 class PinLockCard extends LitElement {
   static get properties() {
     return {
@@ -415,7 +420,11 @@ class PinLockCard extends LitElement {
       mask_input: true,
       max_width: "360px",
     };
+    const previous = this._config;
     this._config = { ...defaults, ...config };
+    if (this._isUnlocked && previous && relockSeconds(previous) !== relockSeconds(this._config)) {
+      this._setRelockDeadline();
+    }
     this._entered = "";
     this._ensureChild();
     this._tickStart();
@@ -514,17 +523,20 @@ class PinLockCard extends LitElement {
     const list = Array.isArray(raw) ? raw : [raw];
     const codes = (list || []).map((c) => String(c).trim()).filter(Boolean);
     if (codes.includes(this._entered)) {
-      const configured = Number(this._config.relock_seconds ?? 60);
-      const seconds = Number.isFinite(configured) && configured >= 0 ? configured : 60;
-      this._unlockUntil = seconds === 0 ? Infinity : Date.now() + seconds * 1000;
+      this._setRelockDeadline();
       this._entered = "";
-      this._updateRemaining();
       this.requestUpdate();
     } else {
       this._shake();
       this._entered = "";
       this.requestUpdate();
     }
+  }
+
+  _setRelockDeadline() {
+    const seconds = relockSeconds(this._config);
+    this._unlockUntil = seconds === 0 ? Infinity : Date.now() + seconds * 1000;
+    this._updateRemaining();
   }
 
   _lockNow() {
