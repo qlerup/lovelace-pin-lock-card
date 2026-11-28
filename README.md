@@ -10,7 +10,7 @@ Supports the Lovelace GUI editor.
 ---
 
 ## ✨ Features
-- 🔢 Lock/unlock any inner card behind one or more PIN codes  
+- 🔢 Lock/unlock any inner card behind one or more PIN codes (or an `input_number` entity)  
 - ⏱️ Optional auto re-lock after N seconds  
 - 🎛️ Show/hide on-screen keypad  
 - 🕵️‍♂️ Mask input while typing  
@@ -73,6 +73,7 @@ type: custom:pin-lock-card
 title: "Kodelås"
 codes:
   - "1234"            # you can add multiple codes
+# code_entity: input_number.pin_code  # optional entity (e.g. input_number) storing the PIN
 relock_seconds: 60    # auto re-lock after N seconds (0 disables it; omitted defaults to 60)
 mask_input: true      # mask digits while typing
 hint: "Enter PIN"     # optional helper text
@@ -115,7 +116,8 @@ Set up the card without touching YAML using the built-in Lovelace GUI editor.
 
 | Option           | Type            | Default     | Description                                   |
 | :--------------- | :-------------- | :---------- | :-------------------------------------------- |
-| `codes`          | array of string | `["1234"]`  | One or more accepted PIN codes                |
+| `codes`          | array of string | `["1234"]` (omitted if `code_entity` is set) | One or more accepted PIN codes |
+| `code_entity`    | string          | –           | Entity ID (such as `input_number.pin_code`) storing the PIN code |
 | `relock_seconds` | number          | `60`        | Auto re-lock after N seconds. Set to 0 to disable.|
 | `mask_input`     | boolean         | `true`      | Mask digits while typing                      |
 | `title`          | string          | `"PIN Lock"`| Title shown above                             |

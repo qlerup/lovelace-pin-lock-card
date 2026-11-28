@@ -20,6 +20,7 @@ const I18N = {
   en: {
     'editor.title_label': 'Title',
     'editor.codes_label': 'Codes (comma-separated)',
+    'editor.code_entity_label': 'PIN entity (e.g. input_number.pin)',
     'editor.relock_label': 'Auto-lock after (seconds)',
     'editor.mask_pin': 'Mask PIN (•)',
     'editor.max_width_label': 'Max width for PIN (number; empty = unlimited)',
@@ -37,6 +38,7 @@ const I18N = {
   da: {
     'editor.title_label': 'Titel',
     'editor.codes_label': 'Koder (kommasepareret)',
+    'editor.code_entity_label': 'PIN-entitet (f.eks. input_number.pin)',
     'editor.relock_label': 'Autolås efter (sekunder)',
     'editor.mask_pin': 'Skjul PIN (•)',
     'editor.max_width_label': 'Maks bredde for PIN (tal; tom = ubegrænset)',
@@ -54,6 +56,7 @@ const I18N = {
   sv: {
     'editor.title_label': 'Titel',
     'editor.codes_label': 'Koder (kommaseparerade)',
+    'editor.code_entity_label': 'PIN-entitet (t.ex. input_number.pin)',
     'editor.relock_label': 'Autolås efter (sekunder)',
     'editor.mask_pin': 'Maskera PIN (•)',
     'editor.max_width_label': 'Maxbredd för PIN (nummer; tom = obegränsad)',
@@ -71,6 +74,7 @@ const I18N = {
   nb: {
     'editor.title_label': 'Tittel',
     'editor.codes_label': 'Koder (kommaseparert)',
+    'editor.code_entity_label': 'PIN-entitet (f.eks. input_number.pin)',
     'editor.relock_label': 'Autolås etter (sekunder)',
     'editor.mask_pin': 'Skjul PIN (•)',
     'editor.max_width_label': 'Maks bredde for PIN (tall; tom = ubegrenset)',
@@ -88,6 +92,7 @@ const I18N = {
   de: {
     'editor.title_label': 'Titel',
     'editor.codes_label': 'Codes (durch Komma getrennt)',
+    'editor.code_entity_label': 'PIN-Entität (z. B. input_number.pin)',
     'editor.relock_label': 'Automatisch sperren nach (Sekunden)',
     'editor.mask_pin': 'PIN ausblenden (•)',
     'editor.max_width_label': 'Maximale Breite für PIN (Zahl; leer = unbegrenzt)',
@@ -105,6 +110,7 @@ const I18N = {
   es: {
     'editor.title_label': 'Título',
     'editor.codes_label': 'Códigos (separados por comas)',
+    'editor.code_entity_label': 'Entidad PIN (p. ej. input_number.pin)',
     'editor.relock_label': 'Bloqueo automático tras (segundos)',
     'editor.mask_pin': 'Ocultar PIN (•)',
     'editor.max_width_label': 'Ancho máximo para PIN (número; vacío = ilimitado)',
@@ -122,6 +128,7 @@ const I18N = {
   fr: {
     'editor.title_label': 'Titre',
     'editor.codes_label': 'Codes (séparés par des virgules)',
+    'editor.code_entity_label': 'Entité PIN (ex. input_number.pin)',
     'editor.relock_label': 'Verrouillage automatique après (secondes)',
     'editor.mask_pin': 'Masquer le PIN (•)',
     'editor.max_width_label': 'Largeur max du PIN (nombre; vide = illimité)',
@@ -139,6 +146,7 @@ const I18N = {
   fi: {
     'editor.title_label': 'Otsikko',
     'editor.codes_label': 'Koodit (pilkuin eroteltu)',
+    'editor.code_entity_label': 'PIN-entiteetti (esim. input_number.pin)',
     'editor.relock_label': 'Automaattinen lukitus (sekunteina)',
     'editor.mask_pin': 'Piilota PIN (•)',
     'editor.max_width_label': 'PIN:n enimmäisleveys (numero; tyhjä = rajoittamaton)',
@@ -156,6 +164,7 @@ const I18N = {
   it: {
     'editor.title_label': 'Titolo',
     'editor.codes_label': 'Codici (separati da virgole)',
+    'editor.code_entity_label': 'Entità PIN (es. input_number.pin)',
     'editor.relock_label': 'Blocco automatico dopo (secondi)',
     'editor.mask_pin': 'Nascondi PIN (•)',
     'editor.max_width_label': 'Larghezza massima per PIN (numero; vuoto = illimitato)',
@@ -202,17 +211,29 @@ function localize(key, langOrHass) {
 class PinLockCardEditor extends HTMLElement {
   setConfig(config) {
     const type = config?.type || 'custom:pin-lock-card';
-    this._config = { type, relock_seconds: 60, codes: ["1234"], mask_input: true, max_width: "360px", ...(config || {}) };
+    const hasCodeEntity = typeof config?.code_entity === 'string' && config.code_entity.trim() !== '';
+    this._config = {
+      type,
+      relock_seconds: 60,
+      ...(hasCodeEntity ? {} : { codes: ["1234"] }),
+      mask_input: true,
+      max_width: "360px",
+      ...(config || {}),
+    };
     this._render();
     // Immediately expose the initial config so YAML is prefilled and GUI mode doesn't fall back to manual
     this._fireChange();
   }
 
   set hass(hass) {
+    const hadHass = !!this._hass;
     this._hass = hass;
     this._lang = getLangFromHass(hass);
     const child = this.shadowRoot?.querySelector('hui-card-element-editor');
     if (child) child.hass = hass;
+    if (!hadHass && hass && this.shadowRoot) {
+      this._populateEntityDatalist();
+    }
   }
 
   connectedCallback() {
@@ -264,10 +285,26 @@ class PinLockCardEditor extends HTMLElement {
     }
   }
 
+  _populateEntityDatalist() {
+    const datalist = this.shadowRoot?.getElementById('code-entity-list');
+    if (!datalist) return;
+    datalist.innerHTML = '';
+    const states = this._hass?.states || {};
+    const entities = Object.keys(states).filter((id) => id.startsWith('input_number.')).sort();
+    for (const entityId of entities) {
+      const opt = document.createElement('option');
+      opt.value = entityId;
+      const friendly = states[entityId]?.attributes?.friendly_name;
+      if (friendly) opt.label = friendly;
+      datalist.appendChild(opt);
+    }
+  }
+
   _render() {
     if (!this.shadowRoot) return;
     const cfg = this._config || {};
     const codesStr = (cfg.codes || []).join(', ');
+    const codeEntityStr = cfg.code_entity ?? '';
     const maxwInput = (() => {
       if (cfg.max_width === undefined || cfg.max_width === null || cfg.max_width === '') return '360';
       const s = String(cfg.max_width).trim();
@@ -305,6 +342,12 @@ class PinLockCardEditor extends HTMLElement {
             </label>
           </div>
           <div class="row">
+            <label> ${t('editor.code_entity_label')}<br/>
+              <input id="code_entity" type="text" list="code-entity-list" placeholder="input_number.pin_code" value="${codeEntityStr}"/>
+              <datalist id="code-entity-list"></datalist>
+            </label>
+          </div>
+          <div class="row">
             <label>
               <input id="mask" type="checkbox" ${cfg.mask_input !== false ? 'checked' : ''}/> ${t('editor.mask_pin')}
             </label>
@@ -338,6 +381,15 @@ class PinLockCardEditor extends HTMLElement {
         this._config = { ...this._config, codes: arr }; 
       });
       add('codes', 'change', () => { this._fireChange(); });
+      const updateCodeEntity = (val) => {
+        const trimmed = String(val ?? '').trim();
+        const next = { ...this._config };
+        if (trimmed) next.code_entity = trimmed;
+        else delete next.code_entity;
+        this._config = next;
+      };
+      add('code_entity', 'input', (e) => { updateCodeEntity(e.target.value); });
+      add('code_entity', 'change', (e) => { updateCodeEntity(e.target.value); this._fireChange(); });
       add('relock', 'input', (e) => { this._config = { ...this._config, relock_seconds: Number(e.target.value) || 0 }; });
       add('relock', 'change', () => { this._fireChange(); });
       add('mask', 'change', (e) => { this._config = { ...this._config, mask_input: !!e.target.checked }; this._fireChange(); });
@@ -353,7 +405,8 @@ class PinLockCardEditor extends HTMLElement {
       });
       add('maxw', 'change', () => { this._fireChange(); });
 
-      // Mount child card editor lazily (no advanced field)
+      // Populate entity autocomplete and mount child card editor lazily (no advanced field)
+      this._populateEntityDatalist();
       this._mountChildEditor();
     }
     catch (e) {
@@ -413,10 +466,11 @@ class PinLockCard extends LitElement {
 
   setConfig(config) {
     if (!config) throw new Error("Missing config");
+    const hasCodeEntity = typeof config.code_entity === "string" && config.code_entity.trim() !== "";
     const defaults = {
       title: "PIN Lock",
       relock_seconds: 60,
-      codes: ["1234"],
+      ...(hasCodeEntity ? {} : { codes: ["1234"] }),
       mask_input: true,
       max_width: "360px",
     };
@@ -518,10 +572,28 @@ class PinLockCard extends LitElement {
     return this._unlockUntil && Date.now() < this._unlockUntil;
   }
 
+  _getValidCodes() {
+    const raw = this._config?.codes;
+    const list = raw === undefined || raw === null ? [] : (Array.isArray(raw) ? raw : [raw]);
+    const codes = list.map((c) => String(c).trim()).filter(Boolean);
+
+    const entityId = typeof this._config?.code_entity === "string" ? this._config.code_entity.trim() : "";
+    if (entityId) {
+      const rawState = this.hass?.states?.[entityId]?.state;
+      if (rawState !== undefined && rawState !== null) {
+        const stateStr = String(rawState).trim();
+        if (stateStr && stateStr !== "unknown" && stateStr !== "unavailable") {
+          // Home Assistant input_number states often include a trailing .0 (e.g. "1234.0")
+          const normalized = /^\d+\.0+$/.test(stateStr) ? stateStr.replace(/\.0+$/, "") : stateStr;
+          codes.push(normalized);
+        }
+      }
+    }
+    return codes;
+  }
+
   _tryUnlock() {
-    const raw = this._config.codes;
-    const list = Array.isArray(raw) ? raw : [raw];
-    const codes = (list || []).map((c) => String(c).trim()).filter(Boolean);
+    const codes = this._getValidCodes();
     if (codes.includes(this._entered)) {
       this._setRelockDeadline();
       this._entered = "";
